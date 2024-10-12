@@ -40,6 +40,5 @@ const bookRoutes = require('./routes/books');
 app.use('/api/books', bookRoutes);
 const userRoutes = require('./routes/user');
 app.use('/api/auth', userRoutes);
-//MVGuser, jvT4ebOiSkndIPFK
 
 module.exports = app;
