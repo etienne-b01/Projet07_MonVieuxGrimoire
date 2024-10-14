@@ -3,17 +3,17 @@ const mongoose = require('mongoose');
 const bookSchema = mongoose.Schema({
   userId: { type: String, required: true },
   title: { type: String, required: true },
-  author: { type: String, required: false },
-  imageUrl: { type: String, required: false },
-  year: { type: String, required: false },
-  genre: { type: String, required: false },
+  author: { type: String, required: true },
+  imageUrl: { type: String, required: true },
+  year: { type: String, required: true },
+  genre: { type: String, required: true },
   ratings: [
     {
-      userId: { type: String, required: false },
-      grade: { type: Number, required: false },
+      userId: { type: String, required: true },
+      grade: { type: Number, required: true },
     },
   ],
-  averageRating: { type: String, required: false },
+  averageRating: { type: Number, required: true },
 });
 
 module.exports = mongoose.model('Book', bookSchema);
