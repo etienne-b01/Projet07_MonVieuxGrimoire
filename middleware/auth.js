@@ -12,5 +12,7 @@ module.exports = (req, res, next) => {
     next();
   } catch (error) {
     res.status(401).json({ error });
+    // debug:
+    console.log('Echec, le token est' + token);
   }
 };
