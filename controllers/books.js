@@ -80,3 +80,7 @@ exports.deleteBook = (req, res, next) => {
       res.status(500).json({ error });
     });
 };
+
+exports.setRating = (req, res, next) => {};
+
+exports.returnBestRated = (req, res) => {};

@@ -29,8 +29,6 @@ exports.login = (req, res, next) => {
         .compare(req.body.password, user.password)
         .then((valid) => {
           if (!valid) {
-            //debug:
-            console.log('mdp saisi = ' + req.body.password);
             return res.status(401).json({ error: 'Mot de passe incorrect !' });
           }
           res.status(200).json({
