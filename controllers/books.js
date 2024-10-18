@@ -81,6 +81,42 @@ exports.deleteBook = (req, res, next) => {
     });
 };
 
-exports.setRating = (req, res, next) => {};
+exports.setRating = (req, res, next) => {
+  Book.findOne({ _id: req.params.id })
+    .then((book) => {
+      const existingRating = book.ratings.find(
+        (rating) => rating.userId === req.auth.userId
+      );
 
-exports.returnBestRated = (req, res) => {};
+      if (!existingRating) {
+        book.ratings.push({ userId: req.auth.userId, grade: req.body.rating });
+        const ratings = book.ratings.map((rating) => rating.grade);
+        let averageRating =
+          ratings.reduce((previous, current) => {
+            return previous + current;
+          }, 0) / ratings.length;
+        averageRating = averageRating.toFixed(1);
+
+        Book.findByIdAndUpdate(
+          { _id: req.params.id },
+          { ratings: book.ratings, averageRating: averageRating },
+          { new: true }
+        )
+          .then((book) => res.status(200).json(book))
+          .catch((error) => res.status(401).json({ error }));
+      } else {
+        return res.status(400).json({ message: 'Livre déjà évalué.' });
+      }
+    })
+    .catch((error) => {
+      return res.status(500).json({ error });
+    });
+};
+
+exports.returnBestRated = (req, res) => {
+  Book.find()
+    .sort({ averageRating: -1 })
+    .limit(3)
+    .then((sortedBooks) => res.status(200).json(sortedBooks))
+    .catch((error) => res.status(400).json({ error }));
+};
