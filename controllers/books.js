@@ -105,7 +105,9 @@ exports.setRating = (req, res, next) => {
           .then((book) => res.status(200).json(book))
           .catch((error) => res.status(401).json({ error }));
       } else {
-        return res.status(400).json({ message: 'Livre déjà évalué.' });
+        return res
+          .status(400)
+          .json({ message: 'Livre déjà évalué, modification impossible.' });
       }
     })
     .catch((error) => {
