@@ -1,7 +1,29 @@
 const multer = require('multer');
 
-//Stores the file in buffer memory for handing on to Sharp middleware
 const storage = multer.memoryStorage();
+
+const formatFilter = function (req, file, callback) {
+  console.log(req);
+  const supportedFileTypes = [
+    'image/jpeg',
+    'image/jpg',
+    'image/png',
+    'image/webp',
+  ];
+  if (!supportedFileTypes.includes(file.mimetype)) {
+    const error = new Error('Format fichier non pris en charge');
+    error.code = 'LIMIT_FILE_TYPES';
+    return callback(error, false);
+  }
+  callback(null, true);
+};
+
+const upload = multer({
+  storage: storage,
+  formatFilter: formatFilter,
+});
+
+module.exports = upload.single('image');
 
 //Previous code below:
 /*const MIME_TYPES = {
@@ -20,6 +42,6 @@ const storage = multer.memoryStorage();
     const extension = MIME_TYPES[file.mimetype];
     callback(null, name + Date.now() + '.' + extension);
   },
-}); */
+}); 
 
-module.exports = multer({ storage: storage }).single('image');
+module.exports = multer({ storage: storage }).single('image'); */

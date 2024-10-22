@@ -7,10 +7,10 @@ const sharpOptimizer = require('../middleware/sharp-config');
 
 router.get('/', bookCtrl.getAllBooks);
 router.post('/', auth, multer, sharpOptimizer, bookCtrl.createBook);
-router.get('/api/books/bestrating', bookCtrl.returnBestRated);
+router.get('/bestrating', bookCtrl.returnBestRated);
 router.get('/:id', bookCtrl.getOneBook);
 router.put('/:id', auth, multer, sharpOptimizer, bookCtrl.modifyBook);
 router.delete('/:id', auth, bookCtrl.deleteBook);
-router.post('/api/books:id/rating', auth, bookCtrl.setRating);
+router.post('/:id/rating', auth, bookCtrl.setRating);
 
 module.exports = router;
