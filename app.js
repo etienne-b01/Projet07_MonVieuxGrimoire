@@ -8,16 +8,8 @@ mongoose
   .connect(
     `mongodb+srv://${process.env.Mongo_DB_username}:${process.env.Mongo_DB_password}@mvgcluster.s6qau.mongodb.net/?retryWrites=true&w=majority&appName=MVGCluster`
   )
-  .then(() =>
-    console.log(
-      `Connexion à MongoDB réussie, variables : ${process.env.Mongo_DB_username}, ${process.env.Mongo_DB_password}`
-    )
-  )
-  .catch(() =>
-    console.log(
-      `Connexion à MongoDB échouée, variables : ${process.env.Mongo_DB_username}, ${process.env.Mongo_DB_password}`
-    )
-  );
+  .then(() => console.log(`Connexion à MongoDB réussie`))
+  .catch(() => console.log(`Connexion à MongoDB échouée`));
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
 

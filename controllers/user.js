@@ -2,8 +2,17 @@ const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 require('dotenv').config({ path: '../.env' });
+const emailRegExp = new RegExp('[a-z0-9._-]+@[a-z0-9._-]+\\.[a-z0-9._-]+');
 
 exports.signup = (req, res, next) => {
+  // Input validation
+  if (!req.body.email || req.body.email.trim() === '') {
+    return res.status(400).json({ error: "Veuillez saisir l'adresse mail" });
+  } else if (!emailRegExp.test(req.body.email)) {
+    return res.status(400).json({ error: "L'adresse email n'est pas valide." });
+  }
+
+  // Hash the password and create the user
   bcrypt
     .hash(req.body.password, 10)
     .then((hash) => {
@@ -11,6 +20,8 @@ exports.signup = (req, res, next) => {
         email: req.body.email,
         password: hash,
       });
+
+      // Save the user to the database
       user
         .save()
         .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
