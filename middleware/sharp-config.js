@@ -38,8 +38,15 @@ const sharpOptimizer = (req, res, next) => {
         // saves the optimized image buffer to the file system.
         fs.writeFile(savePath, buffer, (error) => {
           if (error) {
-            // If there is an error saving the file, pass the error to the next middleware.
-            return next(error);
+            //in case of upload issue, deletes file to save storage space.
+            fs.unlink(savePath, (err) => {
+              if (err)
+                console.error(
+                  'Erreur pendant la suppression du fichier :',
+                  err
+                );
+            });
+            return next(error); // Pass the write error to the next middleware
           }
           next();
         });
