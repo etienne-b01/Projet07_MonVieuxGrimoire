@@ -21,7 +21,15 @@ exports.createBook = (req, res, next) => {
   book
     .save()
     .then(() => res.status(201).json({ message: 'Livre enregistré !' }))
-    .catch((error) => res.status(400).json({ error }));
+    .catch((error) => {
+      res.status(400).json({ error });
+      // To save space, delete image file in case the book object could not be created
+      fs.unlink(req.file.path, (err) => {
+        if (err) {
+          console.error(`Erreur pendant la suppression de l'image :`, err);
+        }
+      });
+    });
 };
 
 // Finds a single book by its ID from the database
@@ -31,6 +39,7 @@ exports.getOneBook = (req, res, next) => {
     .catch((error) => res.status(404).json({ error }));
 };
 
+//ADD FEATURE BELOW FOR DELETING PREVIOUS FILE IF APPL
 exports.modifyBook = (req, res, next) => {
   // If a new image file is provided, parses the book and updates the image URL
   const bookObject = req.file
@@ -50,7 +59,19 @@ exports.modifyBook = (req, res, next) => {
       if (book.userId != req.auth.userId) {
         res.status(401).json({ message: 'Not authorized' });
       } else {
-        // Updates the book in the database
+        // If a new image file is uploaded, delete the current image
+        if (req.file && book.imageUrl) {
+          // Extract the filename from the previous image URL
+          const existingImageFilename = book.imageUrl.split('/images/')[1];
+          // Delete the old image file
+          fs.unlink(`images/${existingImageFilename}`, (err) => {
+            if (err) {
+              console.error('Error deleting old image:', err);
+            }
+          });
+        }
+
+        // Updates the book in the database with the new data
         Book.updateOne(
           { _id: req.params.id },
           { ...bookObject, _id: req.params.id }
