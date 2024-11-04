@@ -1,0 +1,10 @@
+In order to run this project, follow the below steps:
+
+1/ At the root of the project, create a ".env.local" file based on the ".env" file and enter values (without quotation marks or trailing spaces) for all three variables:
+
+- Mongo database username
+- Mongo databse password
+- JSON Web token key
+
+2/ In the terminal, run the following command:
+node --env-file .env.local server.js
