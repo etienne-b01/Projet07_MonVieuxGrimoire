@@ -18,12 +18,12 @@ exports.createBook = (req, res, next) => {
     genre: bookObject.genre,
     ratings: [
       {
-        userId: req.auth.userId, //récupéré depuis source fiable
-        grade: bookObject.ratings[0].grade, //on récupère la 1e note pour éviter toute fraude
+        userId: req.auth.userId, //retrieves the userId from the authentication middleware in order to counter tampered requests
+        grade: bookObject.ratings[0].grade, //retrieves the first grade only in order to counter tampered requests
       },
     ],
-    averageRating: bookObject.ratings[0].grade, //Ici création donc 1 seule note donc aucun calcul requis
-    userId: req.auth.userId, //vient du MW d'auth récupéré depuis token signé par serveur --> fiable
+    averageRating: bookObject.ratings[0].grade, //no need for calculating an average grade as this function creates the book
+    userId: req.auth.userId,
     imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
   });
 
@@ -83,7 +83,22 @@ exports.modifyBook = (req, res, next) => {
         // Updates the book in the database with the new data
         Book.updateOne(
           { _id: req.params.id },
-          { ...bookObject, _id: req.params.id } //à corriger
+          {
+            title: bookObject.title,
+            author: bookObject.author,
+            year: bookObject.year,
+            genre: bookObject.genre,
+            ratings: [
+              {
+                userId: req.auth.userId, //retrieves the userId from the authentication middleware in order to counter tampered requests
+                grade: bookObject.ratings[0].grade, //retrieves the first grade only in order to counter tampered requests
+              },
+            ],
+            averageRating: bookObject.averageRating,
+            userId: req.auth.userId,
+            imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
+            _id: req.params.id,
+          }
         )
           .then(() => res.status(200).json({ message: 'Livre modifié!' }))
           .catch((error) => res.status(401).json({ error }));

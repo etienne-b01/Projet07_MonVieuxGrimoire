@@ -3,10 +3,20 @@ const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
 const path = require('path');
+const helmet = require('helmet');
+
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      imgSrc: ["'self'", 'data:'],
+    },
+  })
+);
 
 mongoose
   .connect(
-    `mongodb+srv://${process.env.Mongo_DB_username}:${process.env.Mongo_DB_password}@mvgcluster.s6qau.mongodb.net/?retryWrites=true&w=majority&appName=MVGCluster`
+    `mongodb+srv://${process.env.MONGO_DB_USERNAME}:${process.env.MONGO_DB_PASSWORD}@mvgcluster.s6qau.mongodb.net/?retryWrites=true&w=majority&appName=MVGCluster`
   )
   .then(() => console.log(`Connexion à MongoDB réussie`))
   .catch(() => console.log(`Connexion à MongoDB échouée`));
